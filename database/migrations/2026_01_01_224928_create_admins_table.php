@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('is_active')->default(true);
+            $table->string('avatar')->nullable();
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
         });
