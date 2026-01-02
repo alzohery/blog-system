@@ -10,11 +10,17 @@ class CheckAdminActive
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::guard('admin')->user();
-        // If the admin is logged in but the account is not activated
-        if ($user && !$user->is_active) {
+        $admin = Auth::guard('admin')->user();
+
+        if (!$admin) {
+            return redirect()->route('admin.login')
+                ->withErrors(['general' => 'Please login first.']);
+        }
+
+        if (!$admin->is_active) {
             Auth::guard('admin')->logout();
-            return redirect()->route('admin.login')->withErrors('Your account is deactivated.');
+            return redirect()->route('admin.login')
+                ->withErrors(['general' => 'Your account is not active.']);
         }
 
         return $next($request);
