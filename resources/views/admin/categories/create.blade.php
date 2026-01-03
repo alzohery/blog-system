@@ -1,26 +1,82 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h1>Create Category</h1>
+<div class="max-w-4xl mx-auto p-6 space-y-6">
 
+    {{-- Header --}}
+    <div>
+        <h1 class="text-2xl font-semibold text-gray-800">Create Category</h1>
+        <p class="text-gray-500 text-sm">Add a new category for posts.</p>
+    </div>
+
+    {{-- Error Message --}}
     @if($errors->any())
-        <p style="color: red;">{{ $errors->first() }}</p>
+        <div class="p-4 bg-red-100 text-red-800 rounded-lg">
+            {{ $errors->first() }}
+        </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.categories.store') }}">
+    {{-- Form --}}
+    <form method="POST"
+          action="{{ route('admin.categories.store') }}"
+          class="bg-white p-6 rounded-xl shadow space-y-6">
         @csrf
 
-        <label>Name</label><br>
-        <input type="text" name="name" value="{{ old('name') }}"><br><br>
+        {{-- Name --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text"
+                   name="name"
+                   value="{{ old('name') }}"
+                   class="mt-1 w-full rounded-lg border border-gray-200
+                          px-3 py-2 text-sm
+                          focus:border-blue-500
+                          focus:ring-2 focus:ring-blue-100
+                          focus:outline-none">
+        </div>
 
-        <label>Slug (optional)</label><br>
-        <input type="text" name="slug" value="{{ old('slug') }}"><br><br>
+        {{-- Slug --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700">
+                Slug <span class="text-gray-400">(optional)</span>
+            </label>
+            <input type="text"
+                   name="slug"
+                   value="{{ old('slug') }}"
+                   class="mt-1 w-full rounded-lg border border-gray-200
+                          px-3 py-2 text-sm
+                          focus:border-blue-500
+                          focus:ring-2 focus:ring-blue-100
+                          focus:outline-none">
+        </div>
 
-        <label>
-            <input type="checkbox" name="is_active" value="1" checked>
-            Active
-        </label><br><br>
+        {{-- Status --}}
+        <div class="flex items-center gap-2">
+            <input type="checkbox"
+                   name="is_active"
+                   value="1"
+                   @checked(old('is_active', true))
+                   class="rounded border-gray-300 text-blue-600
+                          focus:ring-2 focus:ring-blue-200">
+            <label class="text-sm text-gray-700">
+                Active
+            </label>
+        </div>
 
-        <button type="submit">Save</button>
+        {{-- Actions --}}
+        <div class="flex items-center gap-3">
+            <button type="submit"
+                    class="px-6 py-2 rounded-lg bg-blue-600 text-white
+                           hover:bg-blue-700 transition">
+                Save Category
+            </button>
+
+            <a href="{{ route('admin.categories.index') }}"
+               class="text-sm text-gray-600 hover:text-gray-900 hover:underline">
+                Cancel
+            </a>
+        </div>
     </form>
+
+</div>
 @endsection

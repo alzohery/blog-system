@@ -43,4 +43,13 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
+    public function activityLogs()
+    {
+        return $this->morphMany(
+            \App\Modules\ActivityLog\Models\ActivityLog::class,
+            'loggable'
+        );
+    }
+
+
 }

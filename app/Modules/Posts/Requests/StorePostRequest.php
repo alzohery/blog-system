@@ -3,42 +3,55 @@
 namespace App\Modules\Posts\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Posts\Models\Post;
 
-class UpdatePostRequest extends FormRequest
+/**
+ * Handle validation for creating post
+ */
+class StorePostRequest extends FormRequest
 {
     /**
-     * Allow only authenticated admins
+     * Authorization logic
      */
     public function authorize(): bool
     {
-        return auth('admin')->check();
+        return true; // Admin middleware already applied
     }
 
     /**
-     * Validation rules for updating a post
+     * Validation rules
      */
     public function rules(): array
     {
-        $postId = $this->route('post')->id ?? null;
-
         return [
-            'category_id' => ['required', 'exists:categories,id'],
-            'title'       => ['required', 'string', 'max:255'],
-            'slug'        => ['required', 'string', 'max:255', 'unique:posts,slug,' . $postId],
-            'content'     => ['required', 'array'],
-            'main_image'  => ['nullable', 'string', 'max:255'],
-            'status'      => ['nullable', 'in:draft,scheduled,published'],
-            'publish_at'  => ['nullable', 'date'],
+            'category_id' => 'required|exists:categories,id',
+            'title'       => 'required|string|max:255',
+            'slug'        => 'nullable|string|max:255|unique:posts,slug',
+            // 'content'     => 'required|array',
+            'content' => 'required|string',
+            'main_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:9048',
+
+
+            'status' => 'required|in:' . implode(',', [
+                Post::STATUS_DRAFT,
+                Post::STATUS_SCHEDULED,
+                Post::STATUS_PUBLISHED,
+            ]),
+
+            'publish_at' => 'nullable|date|after:now',
         ];
     }
 
     /**
-     * Inject admin_id automatically
+     * Custom validation messages (optional but clear)
      */
-    protected function prepareForValidation(): void
+    public function messages(): array
     {
-        $this->merge([
-            'admin_id' => auth('admin')->id(),
-        ]);
+        return [
+            'category_id.required' => 'Category is required.',
+            'category_id.exists'   => 'Selected category does not exist.',
+
+            'publish_at.after' => 'Publish date must be in the future.',
+        ];
     }
 }

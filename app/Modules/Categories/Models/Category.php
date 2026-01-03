@@ -21,4 +21,13 @@ class Category extends Model
     {
         return $this->hasMany(\App\Modules\Posts\Models\Post::class);
     }
+
+    public function activityLogs()
+    {
+        return $this->morphMany(
+            \App\Modules\ActivityLog\Models\ActivityLog::class,
+            'loggable'
+        );
+    }
+
 }

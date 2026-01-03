@@ -8,7 +8,7 @@ use App\Modules\Admin\DTOs\LoginDTO;
 use App\Modules\Admin\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
+
 use Exception;
 
 class AuthController extends Controller
@@ -53,16 +53,11 @@ class AuthController extends Controller
         }
         
 
-catch (Exception $e) {
-    // سجل الخطأ في log
-    Log::error('Admin Login Error: '.$e->getMessage(), [
-        'email' => $dto->email,
-        'stack' => $e->getTraceAsString()
-    ]);
-
-    // ارجع رسالة عامة للمستخدم
-    return redirect()->back()->withErrors(['general' => 'An error occurred while trying to login. Please check logs for details.']);
-}
+    catch (Exception $e) {
+        
+        // ارجع رسالة عامة للمستخدم
+        return redirect()->back()->withErrors(['general' => 'An error occurred while trying to login. Please check logs for details.']);
+    }
 
     }
 

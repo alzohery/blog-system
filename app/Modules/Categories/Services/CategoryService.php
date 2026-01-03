@@ -6,6 +6,7 @@ use App\Modules\Categories\Models\Category;
 use App\Modules\Categories\DTOs\CategoryDTO;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
+use App\Modules\ActivityLog\Services\ActivityLogService;
 use Exception;
 
 /**
@@ -15,6 +16,13 @@ use Exception;
  */
 class CategoryService
 {
+    protected ActivityLogService $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
+    {
+        $this->activityLogService = $activityLogService;
+    }
+
     /**
      * Get all categories
      *
@@ -35,13 +43,24 @@ class CategoryService
     public function create(CategoryDTO $dto): Category
     {
         try {
-            return Category::create([
+            // create category
+            $category = Category::create([
                 'name'      => $dto->name,
                 'slug'      => $dto->slug ?: Str::slug($dto->name),
                 'is_active' => $dto->is_active,
             ]);
+
+            // create log
+            $this->activityLogService->log(
+                auth('admin')->id(),
+                'created',
+                $category
+            );
+
+            return $category;
+
         } catch (Exception $e) {
-            throw new Exception('Failed to create category.');
+            throw new Exception('Failed to create category: ' . $e->getMessage());
         }
     }
 
@@ -62,9 +81,17 @@ class CategoryService
                 'is_active' => $dto->is_active,
             ]);
 
+            // create log affter update
+            $this->activityLogService->log(
+                auth('admin')->id(),
+                'updated',
+                $category
+            );
+
             return $category;
+
         } catch (Exception $e) {
-            throw new Exception('Failed to update category.');
+            throw new Exception('Failed to update category: ' . $e->getMessage());
         }
     }
 
@@ -79,10 +106,22 @@ class CategoryService
      */
     public function delete(Category $category): void
     {
-        if ($category->posts()->exists()) {
-            throw new Exception('Cannot delete category with posts.');
-        }
+        try {
+            if ($category->posts()->exists()) {
+                throw new Exception('Cannot delete category with posts.');
+            }
 
-        $category->delete();
+            $category->delete();
+
+            // create log affter delete
+            $this->activityLogService->log(
+                auth('admin')->id(),
+                'deleted',
+                $category
+            );
+
+        } catch (Exception $e) {
+            throw new Exception('Failed to delete category: ' . $e->getMessage());
+        }
     }
 }

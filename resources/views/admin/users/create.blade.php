@@ -5,8 +5,8 @@
 
     {{-- Header --}}
     <div>
-        <h1 class="text-2xl font-semibold text-gray-800">Edit Category</h1>
-        <p class="text-gray-500 text-sm">Update category details.</p>
+        <h1 class="text-2xl font-semibold text-gray-800">Create User</h1>
+        <p class="text-gray-500 text-sm">Add a new system user.</p>
     </div>
 
     {{-- Error Message --}}
@@ -18,17 +18,16 @@
 
     {{-- Form --}}
     <form method="POST"
-          action="{{ route('admin.categories.update', $category) }}"
+          action="{{ route('admin.users.store') }}"
           class="bg-white p-6 rounded-xl shadow space-y-6">
         @csrf
-        @method('PUT')
 
         {{-- Name --}}
         <div>
             <label class="block text-sm font-medium text-gray-700">Name</label>
             <input type="text"
                    name="name"
-                   value="{{ old('name', $category->name) }}"
+                   value="{{ old('name') }}"
                    class="mt-1 w-full rounded-lg border border-gray-200
                           px-3 py-2 text-sm
                           focus:border-blue-500
@@ -36,14 +35,24 @@
                           focus:outline-none">
         </div>
 
-        {{-- Slug --}}
+        {{-- Email --}}
         <div>
-            <label class="block text-sm font-medium text-gray-700">
-                Slug <span class="text-gray-400">(optional)</span>
-            </label>
-            <input type="text"
-                   name="slug"
-                   value="{{ old('slug', $category->slug) }}"
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email"
+                   name="email"
+                   value="{{ old('email') }}"
+                   class="mt-1 w-full rounded-lg border border-gray-200
+                          px-3 py-2 text-sm
+                          focus:border-blue-500
+                          focus:ring-2 focus:ring-blue-100
+                          focus:outline-none">
+        </div>
+
+        {{-- Password --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password"
+                   name="password"
                    class="mt-1 w-full rounded-lg border border-gray-200
                           px-3 py-2 text-sm
                           focus:border-blue-500
@@ -56,12 +65,10 @@
             <input type="checkbox"
                    name="is_active"
                    value="1"
-                   @checked(old('is_active', $category->is_active))
+                   checked
                    class="rounded border-gray-300 text-blue-600
                           focus:ring-2 focus:ring-blue-200">
-            <label class="text-sm text-gray-700">
-                Active
-            </label>
+            <label class="text-sm text-gray-700">Active</label>
         </div>
 
         {{-- Actions --}}
@@ -69,10 +76,10 @@
             <button type="submit"
                     class="px-6 py-2 rounded-lg bg-blue-600 text-white
                            hover:bg-blue-700 transition">
-                Update Category
+                Save User
             </button>
 
-            <a href="{{ route('admin.categories.index') }}"
+            <a href="{{ route('admin.users.index') }}"
                class="text-sm text-gray-600 hover:text-gray-900 hover:underline">
                 Cancel
             </a>

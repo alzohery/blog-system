@@ -42,10 +42,14 @@ class Post extends Model
     /**
      * Post has many activity logs
      */
-    public function activityLogs(): HasMany
+    public function activityLogs()
     {
-        return $this->hasMany(\App\Modules\ActivityLog\Models\ActivityLog::class);
+        return $this->morphMany(
+            \App\Modules\ActivityLog\Models\ActivityLog::class,
+            'loggable'
+        );
     }
+
 
     /**
      * Available statuses for a post
