@@ -64,12 +64,11 @@ The system provides an **Admin Dashboard** to manage blog posts, categories, use
 ### Queue & Scheduling
 - Database queue driver
 - Scheduled posts are published automatically at the specified time
-- Queue tested using `php artisan queue:work`
 
 ---
 
 ### Activity Log
-- Logs all post actions:
+- Logs all post and user actions:
   - Create
   - Update
   - Delete
@@ -107,13 +106,12 @@ The system provides an **Admin Dashboard** to manage blog posts, categories, use
   - Update users
   - Activate / deactivate users
   - Delete users
-- User authentication prepared for future frontend usage
 
 ---
 
 ## Technologies Used
 
-- Laravel 12.44.0
+- Laravel 11
 - PHP 8.3
 - MySQL
 - Blade Templates
@@ -122,26 +120,12 @@ The system provides an **Admin Dashboard** to manage blog posts, categories, use
 
 ---
 
-## Project Structure (Simplified)
-
-```text
-app/
- └── Modules/
-     ├── Admin
-     ├── Posts
-     ├── Categories
-     ├── Users
-     ├── ActivityLog
-```
-
----
-
 ## Prerequisites
 
 - PHP >= 8.2
 - Composer
 - MySQL (or any Laravel-supported database)
-- Node.js (optional)
+- Node.js & npm
 
 ---
 
@@ -153,9 +137,14 @@ git clone https://github.com/alzohery/blog-system.git
 cd blog-system
 ```
 
-### Install Dependencies
+### Install Backend Dependencies
 ```bash
 composer install
+```
+
+### Install Frontend Dependencies (Tailwind)
+```bash
+npm install
 ```
 
 ### Environment Setup
@@ -165,15 +154,17 @@ cp .env.example .env
 
 Update database credentials in `.env`.
 
-### Generate App Key
+### Generate Application Key
 ```bash
 php artisan key:generate
 ```
 
-### Run Migrations
+### Run Migrations & Seeders
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
+
+> This command will create a default admin account automatically (only once).
 
 ### Storage Link
 ```bash
@@ -182,27 +173,80 @@ php artisan storage:link
 
 ---
 
-## Run the Application
+## Default Admin Credentials
+
+```text
+Email: admin@admin.com
+Password: password
+```
+
+---
+
+## Running the Application
+
 ```bash
 php artisan serve
 ```
 
 Application will be available at:
-```
+```text
 http://127.0.0.1:8000
 ```
 
 ---
 
+## Admin Login
+
+```text
+http://127.0.0.1:8000/admin/login
+```
+
+---
+
+## Running Tailwind CSS
+
+### Development Mode
+```bash
+npm run dev
+```
+
+### Production Build
+```bash
+npm run build
+```
+
+---
+
 ## Queue Worker
+
+### Local Development
 ```bash
 php artisan queue:work
 ```
 
 ---
 
-## Admin Panel
+## Queue Worker on Server (Production)
+
+### Using Supervisor
+
+```bash
+command=php /var/www/blog-system/artisan queue:work --sleep=3 --tries=3
+
 ```
+
+```bash
+sudo supervisorctl start laravel-queue:*
+
+```
+
+
+
+
+
+## Admin Panel
+
+```text
 /admin
 ```
 
